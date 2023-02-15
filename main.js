@@ -15,10 +15,13 @@ const trirdLive = document.getElementById('3rd_chicken')
 const startButton = document.querySelector('.start')
 const closeButton = document.querySelector('.close')
 const overlay = document.querySelector('.overlay')
-const modal = document.querySelector('.modal')
+const modalHeader = document.querySelector('.modal-header')
+const modalBody = document.querySelector('.modal-body')
 const audioChicken = new Audio('media/sounds/chicken.wav')
 const audioBackground = new Audio('media/sounds/haisenberg.wav')
 let vol = audioBackground.volume = 0.8
+let finalMessage = '|'
+let lettersIndex = 0
 const soundInterval = 200
 let xCoord = 0
 let yCoord = 0
@@ -32,12 +35,35 @@ const circleArray = {
   4: fourthCircle
 }
 
+const messagesArray = {
+  1: 'To survive, you should click faster'
+}
+
 function chickenSound () {
   const cloneSound = audioChicken.cloneNode()
   if (audioChicken.duration > 0) {
     cloneSound.play()
   } else {
     audioChicken.play()
+  }
+}
+console.log(messagesArray[1].length)
+
+let intervalID
+
+function intervalTyping () { 
+  intervalID = setInterval(showFinalMessage, 200, 'pew pew pew')
+}
+
+function showFinalMessage (msg) {
+  if (finalMessage.length < msg.length + 1) {
+    finalMessage = finalMessage.replace('|', '')
+    finalMessage += msg[lettersIndex++] + '|'
+    modalBody.innerHTML = finalMessage
+  } else {
+    clearInterval(intervalID)
+    finalMessage = finalMessage.replace('|', '')
+    modalBody.innerHTML = finalMessage
   }
 }
 
@@ -67,7 +93,6 @@ function getActiveCircle () {
 function activate () {
   circleArray[getActiveCircle()].classList.add('active')
   circleArray[lastCircleNumber].removeEventListener('click', gameOver)
-  circleArray[lastCircleNumber].removeEventListener('click', makeBlood)
   circleArray[lastCircleNumber].addEventListener('click', scoreCounter)
 }
 
@@ -75,7 +100,6 @@ function deactivate () {
   circleArray[lastCircleNumber].classList.remove('active')
   circleArray[lastCircleNumber].removeEventListener('click', scoreCounter)
   circleArray[lastCircleNumber].addEventListener('click', gameOver)
-  circleArray[lastCircleNumber].addEventListener('click', makeBlood)
 }
 
 function toggleOverlay () {
@@ -100,15 +124,16 @@ function scoreCounter () {
 }
 
 const gameOver = () => {
-  modal.innerHTML = 'Your total score is ' + score
+  modalHeader.innerHTML = 'Your total score is ' + score
   gameStatus = false
+  document.elementFromPoint(xCoord, yCoord).style.backgroundColor = 'red'
   deactivate()
   fadeout()
   toggleOverlay()
-}
-
-const makeBlood = () => {
-  document.elementFromPoint(xCoord, yCoord).style.backgroundColor = 'red'
+  for (const property in circleArray) {
+    circleArray[property].removeEventListener('click', gameOver)
+  }
+  setTimeout(intervalTyping, 950)
 }
 
 function circlesManager () {
@@ -145,7 +170,6 @@ const play = () => {
 
 for (const property in circleArray) {
   circleArray[property].addEventListener('click', gameOver)
-  circleArray[property].addEventListener('click', makeBlood)
 }
 
 function mouseCoordinates (event) {

@@ -12,7 +12,7 @@ body {
 .container {
   max-width: 700px;
   margin: auto;
-  margin-top: 5%;
+  margin-top: 15%;
   text-align: center;
 }
 
@@ -24,7 +24,6 @@ img {
 .hide {
   animation-name: animatechicken;
   animation-duration: 0.5s;
-  display: none;
 }
 
 .score {
