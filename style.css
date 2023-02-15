@@ -24,7 +24,7 @@ img {
 .hide {
   animation-name: animatechicken;
   animation-duration: 0.5s;
-  /* display: none; */
+  display: none;
 }
 
 .score {
