@@ -1,45 +1,44 @@
+/* eslint-disable space-before-function-paren */
 /* eslint-disable promise/param-names */
+/* Game preferences */
 let score = 0
 let counter = 0
-let gameStatus = true
-let interval = 1000
-let lastCircleNumber = 0
-const gameSpeed = 600
-const firstCircle = document.getElementById('1')
-const secondCircle = document.getElementById('2')
-const thirdCircle = document.getElementById('3')
-const fourthCircle = document.getElementById('4')
-const firstLive = document.getElementById('1st_chicken')
-const secondLive = document.getElementById('2nd_chicken')
-const trirdLive = document.getElementById('3rd_chicken')
+let gameStatus = false
+let gamePace = 1000
+let lastCircleNumber = -1
+let lastClickedCircleIndex = -1
+const gameMaxSpeed = 750
+
+/* Elements */
+const chickens = document.querySelectorAll('.chicken')
+const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
 const closeButton = document.querySelector('.close')
-const overlay = document.querySelector('.overlay')
+const modal = document.querySelector('.modal')
 const modalHeader = document.querySelector('.modal-header')
 const modalBody = document.querySelector('.modal-body')
+
+/* Messages and sounds */
 const audioChicken = new Audio('media/sounds/chicken.wav')
 const audioBackground = new Audio('media/sounds/haisenberg.wav')
-let vol = audioBackground.volume = 0.8
+const fasterSound = new Audio('media/sounds/faster.m4a')
+const slayerSound = new Audio('media/sounds/hen_slayer.m4a')
+const whatAreYou = new Audio('media/sounds/what_are_you.m4a')
+const megaKill = new Audio('media/sounds/mega_kill.m4a')
+const rampage = new Audio('media/sounds/rampage.m4a')
+const messagesArray = {
+  1: 'To survive, you should click faster!',
+  2: 'You are the great hen slayer!',
+  3: 'What are you? Could you really be stopped?'
+}
+let messageSetInterval
+let finalMessageSpeed
+let vol = (audioBackground.volume = 0.8)
 let finalMessage = '|'
 let lettersIndex = 0
-const soundInterval = 200
-let xCoord = 0
-let yCoord = 0
 
-window.addEventListener('mousemove', mouseCoordinates)
-
-const circleArray = {
-  1: firstCircle,
-  2: secondCircle,
-  3: thirdCircle,
-  4: fourthCircle
-}
-
-const messagesArray = {
-  1: 'To survive, you should click faster'
-}
-
-function chickenSound () {
+/* Sounds and messages */
+function chickenSound() {
   const cloneSound = audioChicken.cloneNode()
   if (audioChicken.duration > 0) {
     cloneSound.play()
@@ -47,33 +46,10 @@ function chickenSound () {
     audioChicken.play()
   }
 }
-console.log(messagesArray[1].length)
 
-let intervalID
-
-function intervalTyping () { 
-  intervalID = setInterval(showFinalMessage, 200, 'pew pew pew')
-}
-
-function showFinalMessage (msg) {
-  if (finalMessage.length < msg.length + 1) {
-    finalMessage = finalMessage.replace('|', '')
-    finalMessage += msg[lettersIndex++] + '|'
-    modalBody.innerHTML = finalMessage
-  } else {
-    clearInterval(intervalID)
-    finalMessage = finalMessage.replace('|', '')
-    modalBody.innerHTML = finalMessage
-  }
-}
-
-function backgroundMusic () {
-  audioBackground.play()
-}
-
-function fadeout () {
+function backgroundMusicFadeout() {
   if (vol >= 0.02) {
-    setTimeout(fadeout, soundInterval)
+    setTimeout(backgroundMusicFadeout, 200)
     audioBackground.volume = vol
     vol -= 0.04
   } else {
@@ -81,101 +57,171 @@ function fadeout () {
   }
 }
 
-function getActiveCircle () {
+function funnySounds() {
+  if (score === 15) {
+    megaKill.play()
+  } else if (score === 20) {
+    rampage.play()
+  }
+}
+
+function getFinalMessage() {
+  if (score < 10) {
+    fasterSound.play()
+    return messagesArray[1]
+  } else if (score < 20) {
+    slayerSound.play()
+    return messagesArray[2]
+  } else {
+    whatAreYou.play()
+    return messagesArray[3]
+  }
+}
+
+function showFinalMessage(msg) {
+  if (finalMessage.length < msg.length + 1) {
+    finalMessage = finalMessage.replace('|', '')
+    finalMessage += msg[lettersIndex++] + '|'
+    modalBody.innerHTML = finalMessage
+  } else {
+    clearInterval(messageSetInterval)
+    finalMessage = finalMessage.replace('|', '')
+    modalBody.innerHTML = finalMessage
+  }
+}
+
+const calculateFinalMessageSpeed = () => {
+  if (score < 10) {
+    finalMessageSpeed = (fasterSound.duration / messagesArray[1].length) * 1000
+  } else if (score < 20) {
+    finalMessageSpeed = (slayerSound.duration / messagesArray[2].length) * 1000
+  } else {
+    finalMessageSpeed = (whatAreYou.duration / messagesArray[3].length) * 1000
+  }
+}
+
+function intervalTyping() {
+  messageSetInterval = setInterval(
+    showFinalMessage,
+    finalMessageSpeed,
+    getFinalMessage(score)
+  )
+}
+
+function getActiveCircle() {
   let activeCircle = lastCircleNumber
   while (activeCircle === lastCircleNumber) {
-    activeCircle = Math.floor(Math.random() * 4) + 1
+    activeCircle = Math.floor(Math.random() * 4)
   }
   lastCircleNumber = activeCircle
   return activeCircle
 }
 
-function activate () {
-  circleArray[getActiveCircle()].classList.add('active')
-  circleArray[lastCircleNumber].removeEventListener('click', gameOver)
-  circleArray[lastCircleNumber].addEventListener('click', scoreCounter)
-}
-
-function deactivate () {
-  circleArray[lastCircleNumber].classList.remove('active')
-  circleArray[lastCircleNumber].removeEventListener('click', scoreCounter)
-  circleArray[lastCircleNumber].addEventListener('click', gameOver)
-}
-
-function toggleOverlay () {
-  overlay.classList.toggle('visible')
-}
-
-function lives () {
-  if (counter - score === 1) {
-    trirdLive.classList.add('hide')
-  } else if (counter - score === 2) {
-    secondLive.classList.add('hide')
-  } else if (counter - score === 3) {
-    firstLive.classList.add('hide')
+/* Game management */
+function lives() {
+  const difference = counter - score
+  if (difference !== 0) {
+    chickens[3 - difference].classList.add('hide')
+    setTimeout(() => {
+      chickens[3 - difference].style.display = 'none'
+    }, 350)
   }
 }
 
-function scoreCounter () {
-  score += 1
+function activateCircle() {
+  circles[getActiveCircle()].classList.add('active')
+  circles[lastCircleNumber].removeEventListener('click', gameOver)
+  circles[lastCircleNumber].addEventListener('click', scoreManager)
+  lives()
+  counter++
+}
+
+function deactivateCircle() {
+  circles[lastCircleNumber].classList.remove('active')
+  circles[lastCircleNumber].removeEventListener('click', scoreManager)
+  circles[lastCircleNumber].addEventListener('click', gameOver)
+}
+
+function togglemodal() {
+  modal.classList.toggle('visible')
+}
+
+function scoreManager() {
+  score++
   document.querySelector('.score').innerHTML = 'current score: ' + score
   chickenSound()
-  deactivate()
+  deactivateCircle()
+  if (score >= 10) {
+    funnySounds()
+  }
 }
 
 const gameOver = () => {
-  modalHeader.innerHTML = 'Your total score is ' + score
   gameStatus = false
-  document.elementFromPoint(xCoord, yCoord).style.backgroundColor = 'red'
-  deactivate()
-  fadeout()
-  toggleOverlay()
-  for (const property in circleArray) {
-    circleArray[property].removeEventListener('click', gameOver)
+  modalHeader.innerHTML = 'Your total score is ' + score
+  if (
+    lastCircleNumber !== lastClickedCircleIndex &&
+    lastClickedCircleIndex >= 0
+  ) {
+    circles[lastClickedCircleIndex].style.backgroundColor = '#d2691e'
   }
-  setTimeout(intervalTyping, 950)
+  deactivateCircle()
+  backgroundMusicFadeout()
+  togglemodal()
+  circles.forEach((circle, i) => {
+    circle.removeEventListener('click', gameOver)
+  })
+  calculateFinalMessageSpeed()
+  /* Interval is based on the duration of the animation */
+  setTimeout(intervalTyping, 900)
 }
 
-function circlesManager () {
-  if (lastCircleNumber !== 0) {
-    deactivate()
+function circlesManager() {
+  lastClickedCircleIndex = -1
+  if (lastCircleNumber !== -1) {
+    deactivateCircle()
   }
-  activate()
-  counter += 1
+  activateCircle()
 }
 
-function gameManager () {
+function gameManager() {
   if (!gameStatus) {
     return
   }
   if (counter - score === 3) {
+    lives()
     gameOver()
     return
   }
-  setTimeout(gameManager, interval)
-  if (interval > gameSpeed) {
-    interval *= 0.97
-    lives()
+  setTimeout(gameManager, gamePace)
+  if (gamePace > gameMaxSpeed) {
+    gamePace *= 0.97
     circlesManager()
   } else {
-    lives()
     circlesManager()
   }
 }
 
 const play = () => {
+  gameStatus = true
   gameManager()
-  backgroundMusic()
+  audioBackground.play()
 }
 
-for (const property in circleArray) {
-  circleArray[property].addEventListener('click', gameOver)
+/* Initialize necessary event listener */
+const circleClicked = (e) => {
+  if (gameStatus) {
+    lastClickedCircleIndex = e.target.id - 1
+  }
 }
 
-function mouseCoordinates (event) {
-  xCoord = event.pageX
-  yCoord = event.pageY
-}
+circles.forEach((circle, i) => {
+  circle.addEventListener('click', circleClicked)
+})
+
+circles.forEach((circle, i) => {
+  circle.addEventListener('click', gameOver)
+})
 
 startButton.addEventListener('click', play)
-closeButton.addEventListener('click', toggleOverlay)
+/* closeButton.addEventListener('click', togglemodal) */

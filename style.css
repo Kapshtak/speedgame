@@ -12,7 +12,7 @@ body {
 .container {
   max-width: 700px;
   margin: auto;
-  margin-top: 15%;
+  margin-top: 5%;
   text-align: center;
 }
 
@@ -21,9 +21,19 @@ img {
   width: 75px;
 }
 
+.lives {
+  display: grid;
+  max-width: 300px;
+  min-height: 105px;
+  justify-items: center;
+  align-items: center;
+  margin: auto;
+  grid-template-columns: repeat(3, 100px);
+}
+
 .hide {
   animation-name: animatechicken;
-  animation-duration: 0.5s;
+  animation-duration: 0.35s;
 }
 
 .score {
@@ -32,8 +42,11 @@ img {
 }
 
 .balls {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(4, 25%);
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
 }
 
 .circle {
@@ -46,7 +59,7 @@ img {
 }
 
 .active {
-  background-image: url("media/images/pollos.png");
+  background-image: url('media/images/pollos.png');
   background-size: 100%;
 }
 
@@ -65,19 +78,25 @@ img {
 }
 
 /* Overlay modal */
-.overlay {
+.modal {
   display: none;
-  position: fixed;
-  justify-content: center;
+}
+
+.modal.visible {
+  background-color: rgb(202, 199, 244);
+  position: absolute;
+  border-radius: 40px;
+  min-height: 30%;
+  max-height: 60%;
+  max-width: 45%;
+  display: grid;
+  margin-top: 112px;
+  font-size: 250%;
+  justify-content: top;
   align-items: center;
 }
 
-.overlay.visible {
-  display: flex;
-}
-
 .modal {
-  background-color: #fefefe;
   min-height: 100px;
   min-width: 300px;
   padding: 0;
@@ -109,5 +128,15 @@ img {
   }
   to {
     opacity: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .modal.visible {
+    min-height: 30%;
+    max-height: 60%;
+    max-width: 90%;
+    display: grid;
+    margin-top: 75px;
   }
 }
