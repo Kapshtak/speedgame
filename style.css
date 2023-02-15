@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: rgb(129, 183, 238);
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  margin-top: 5%;
+  text-align: center;
+}
+
+img {
+  padding-top: 30px;
+  width: 75px;
+}
+
+.hide {
+  animation-name: animatechicken;
+  animation-duration: 0.5s;
+  /* display: none; */
+}
+
+.score {
+  margin-top: 50px;
+  margin-bottom: 75px;
+}
+
+.balls {
+  display: flex;
+  justify-content: space-around;
+}
+
+.circle {
+  vertical-align: middle;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgb(10, 237, 218);
+  margin-top: -45px;
+}
+
+.active {
+  background-image: url("media/images/pollos.png");
+  background-size: 100%;
+}
+
+.fail {
+  background-color: blueviolet;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 0.5rem 1rem;
+  font-size: inherit;
+  font-family: inherit;
+  margin-top: 50px;
+}
+
+/* Overlay modal */
+.overlay {
+  display: none;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay.visible {
+  display: flex;
+}
+
+.modal {
+  background-color: #fefefe;
+  min-height: 100px;
+  min-width: 300px;
+  padding: 0;
+  animation-name: animatetop;
+  animation-duration: 0.9s;
+  border-radius: 5px;
+  position: relative;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+@keyframes animatetop {
+  from {
+    top: -500px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes animatechicken {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
