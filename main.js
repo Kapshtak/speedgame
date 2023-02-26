@@ -1,22 +1,32 @@
 /* eslint-disable space-before-function-paren */
 /* eslint-disable promise/param-names */
 /* Game preferences */
+
 let score = 0
 let counter = 0
 let gameStatus = false
 let gamePace = 1000
 let lastCircleNumber = -1
 let lastClickedCircleIndex = -1
-const gameMaxSpeed = 750
+let gameMaxSpeed = 750
+let gameStep = 0.98
+let gameDifficulty = 'easy'
+let startingDiameter = 150
 
 /* Elements */
 const chickens = document.querySelectorAll('.chicken')
 const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
-const closeButton = document.querySelector('.close')
+const stopButton = document.querySelector('.stop')
+const restartButton = document.querySelector('.restart')
+const scores = document.querySelectorAll('.score')
 const modal = document.querySelector('.modal')
 const modalHeader = document.querySelector('.modal-header')
 const modalBody = document.querySelector('.modal-body')
+const difficulty = document.querySelector('.difficulty')
+const easy = document.querySelector('#easy')
+const medium = document.querySelector('#medium')
+const hard = document.querySelector('#hard')
 
 /* Messages and sounds */
 const audioChicken = new Audio('media/sounds/chicken.wav')
@@ -60,7 +70,7 @@ function backgroundMusicFadeout() {
 function funnySounds() {
   if (score === 15) {
     megaKill.play()
-  } else if (score === 20) {
+  } else if (score === 25) {
     rampage.play()
   }
 }
@@ -81,8 +91,10 @@ function getFinalMessage() {
 function showFinalMessage(msg) {
   if (finalMessage.length < msg.length + 1) {
     finalMessage = finalMessage.replace('|', '')
-    finalMessage += msg[lettersIndex++] + '|'
-    modalBody.innerHTML = finalMessage
+    if (typeof msg[lettersIndex] !== 'undefined') {
+      finalMessage += msg[lettersIndex++] + '|'
+      modalBody.innerHTML = finalMessage
+    }
   } else {
     clearInterval(messageSetInterval)
     finalMessage = finalMessage.replace('|', '')
@@ -118,12 +130,33 @@ function getActiveCircle() {
 }
 
 /* Game management */
+function setupGameDifficulty() {
+  switch (gameDifficulty) {
+    case 'easy':
+      gameMaxSpeed = 750
+      gameStep = 0.98
+      break
+    case 'medium':
+      gameMaxSpeed = 650
+      gameStep = 0.95
+      break
+    case 'hard':
+      gameMaxSpeed = 550
+      gameStep = 0.92
+      break
+  }
+}
+
 function lives() {
   const difference = counter - score
   if (difference !== 0) {
     chickens[3 - difference].classList.add('hide')
+    chickens[6 - difference].classList.add('hide')
     setTimeout(() => {
       chickens[3 - difference].style.display = 'none'
+    }, 350)
+    setTimeout(() => {
+      chickens[6 - difference].style.display = 'none'
     }, 350)
   }
 }
@@ -142,13 +175,15 @@ function deactivateCircle() {
   circles[lastCircleNumber].addEventListener('click', gameOver)
 }
 
-function togglemodal() {
+function toggleModal() {
   modal.classList.toggle('visible')
 }
 
 function scoreManager() {
   score++
-  document.querySelector('.score').innerHTML = 'current score: ' + score
+  scores.forEach((v, i) => {
+    v.innerHTML = `current score: ${score}`
+  })
   chickenSound()
   deactivateCircle()
   if (score >= 10) {
@@ -158,7 +193,7 @@ function scoreManager() {
 
 const gameOver = () => {
   gameStatus = false
-  modalHeader.innerHTML = 'Your total score is ' + score
+  modalHeader.innerHTML = `Your total score is ${score}`
   if (
     lastCircleNumber !== lastClickedCircleIndex &&
     lastClickedCircleIndex >= 0
@@ -166,13 +201,14 @@ const gameOver = () => {
     circles[lastClickedCircleIndex].style.backgroundColor = '#d2691e'
   }
   deactivateCircle()
+  stopButton.style.display = 'none'
   backgroundMusicFadeout()
-  togglemodal()
+  toggleModal()
   circles.forEach((circle, i) => {
     circle.removeEventListener('click', gameOver)
   })
   calculateFinalMessageSpeed()
-  /* Interval is based on the duration of the animation */
+  /* The iterval is based on the duration of the animation */
   setTimeout(intervalTyping, 900)
 }
 
@@ -182,6 +218,13 @@ function circlesManager() {
     deactivateCircle()
   }
   activateCircle()
+  if (gameDifficulty === 'hard' && counter > 0 && startingDiameter >= 75) {
+    circles.forEach((circle, i) => {
+      startingDiameter *= 0.995
+      circle.style.width = `${startingDiameter}px`
+      circle.style.height = `${startingDiameter}px`
+    })
+  }
 }
 
 function gameManager() {
@@ -195,7 +238,7 @@ function gameManager() {
   }
   setTimeout(gameManager, gamePace)
   if (gamePace > gameMaxSpeed) {
-    gamePace *= 0.97
+    gamePace *= gameStep
     circlesManager()
   } else {
     circlesManager()
@@ -203,12 +246,63 @@ function gameManager() {
 }
 
 const play = () => {
+  if (easy.checked) {
+    gameDifficulty = 'easy'
+  } else if (medium.checked) {
+    gameDifficulty = 'medium'
+  } else if (hard.checked) {
+    gameDifficulty = 'hard'
+  }
+  setupGameDifficulty()
+  difficulty.style.display = 'none'
   gameStatus = true
+  startButton.style.display = 'none'
+  stopButton.style.display = 'inline-block'
   gameManager()
   audioBackground.play()
 }
 
-/* Initialize necessary event listener */
+const stop = () => {
+  gameStatus = false
+  gameOver()
+}
+
+const restart = () => {
+  gameStatus = false
+  score = 0
+  counter = 0
+  gamePace = 1000
+  lastCircleNumber = -1
+  lastClickedCircleIndex = -1
+  startingDiameter = 150
+  modal.classList.toggle('visible')
+  startButton.style.display = 'inline-block'
+  stopButton.style.display = 'none'
+  scores.forEach((v, i) => {
+    v.innerHTML = `current score: ${score}`
+  })
+  vol = audioBackground.volume = 0.8
+  circles.forEach((circle, i) => {
+    circle.style.backgroundColor = null
+  })
+  modalBody.innerHTML = ''
+  finalMessage = '|'
+  lettersIndex = 0
+  chickens.forEach((chicken, i) => {
+    chicken.classList.remove('hide')
+    chicken.style.display = 'block'
+  })
+  circles.forEach((circle, i) => {
+    circle.addEventListener('click', gameOver)
+  })
+  circles.forEach((circle, i) => {
+    circle.style.width = `${startingDiameter}px`
+    circle.style.height = `${startingDiameter}px`
+  })
+  difficulty.style.display = 'block'
+}
+
+/* Initialize necessary event listeners */
 const circleClicked = (e) => {
   if (gameStatus) {
     lastClickedCircleIndex = e.target.id - 1
@@ -224,4 +318,13 @@ circles.forEach((circle, i) => {
 })
 
 startButton.addEventListener('click', play)
-/* closeButton.addEventListener('click', togglemodal) */
+stopButton.addEventListener('click', stop)
+restartButton.addEventListener('click', restart)
+
+if (window.innerHeight > window.innerWidth) {
+  if (window.innerWidth < 620 && window.innerHeight >= 620) {
+    alert('Please rotate the device to play.')
+  } else {
+    alert('Your device cannot be used to play the game.')
+  }
+}

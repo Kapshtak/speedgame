@@ -7,7 +7,7 @@
 
 - ~~Active circle must be a picture (toilet paper, cheese, etc)~~
 
-- Start button changes to stop button
+- ~~Start button changes to stop button~~
 
 - ~~After game-over or clicking stop button we need modal with score and different messages related to the score~~
 
