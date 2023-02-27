@@ -19,4 +19,4 @@
 
 - ~~Add sound to start, end and clicks~~
 
-- Deploy the game
+- ~~Deploy the game~~

@@ -34,7 +34,7 @@ const modalAnimationDuration =
 
 /* Messages and sounds */
 const audioChicken = new Audio('media/sounds/chicken.wav')
-const audioBackground = new Audio('media/sounds/haisenberg.wav')
+const audioBackground = new Audio('media/sounds/haisenberg.mp3')
 const fasterSound = new Audio('media/sounds/faster.m4a')
 const slayerSound = new Audio('media/sounds/hen_slayer.m4a')
 const whatAreYou = new Audio('media/sounds/what_are_you.m4a')
