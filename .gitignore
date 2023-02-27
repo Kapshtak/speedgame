@@ -5,3 +5,4 @@ python-server/venv
 __pycache__/
 tailwind.config.js
 db.sqlite3
+dist/
