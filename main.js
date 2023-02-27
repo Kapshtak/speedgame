@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren */
 /* eslint-disable promise/param-names */
 /* Game preferences */
-
 let score = 0
 let counter = 0
 let gameStatus = false
@@ -22,7 +21,7 @@ const stopButton = document.querySelector('.stop')
 const restartButton = document.querySelector('.restart')
 const heroButton = document.querySelector('.heroname')
 const scores = document.querySelectorAll('.score')
-const champions = document.querySelector('.modal-champion')
+const champions = document.querySelector('.modal-champion') // TODO: fix an auto-refresh issue
 const modal = document.querySelector('.modal')
 const modalHeader = document.querySelector('.modal-header')
 const modalBody = document.querySelector('.modal-body')
@@ -30,6 +29,10 @@ const difficulty = document.querySelector('.difficulty')
 const easy = document.querySelector('#easy')
 const medium = document.querySelector('#medium')
 const hard = document.querySelector('#hard')
+const modalAnimationDuration =
+  getComputedStyle(document.documentElement)
+    .getPropertyValue('--modalAnimationDuration')
+    .slice(0, -1) * 1000
 
 /* Messages and sounds */
 const audioChicken = new Audio('media/sounds/chicken.wav')
@@ -46,7 +49,7 @@ const messagesArray = {
 }
 let messageSetInterval
 let finalMessageSpeed
-let vol = (audioBackground.volume = 0.8)
+let vol = 0.8
 let finalMessage = '|'
 let lettersIndex = 0
 
@@ -66,6 +69,8 @@ function getChampions() {
 }
 
 /* Sounds and messages */
+audioBackground.volume = 0.8
+
 function chickenSound() {
   const cloneSound = audioChicken.cloneNode()
   if (audioChicken.duration > 0) {
@@ -111,12 +116,12 @@ function showFinalMessage(msg) {
     finalMessage = finalMessage.replace('|', '')
     if (typeof msg[lettersIndex] !== 'undefined') {
       finalMessage += msg[lettersIndex++] + '|'
-      modalBody.innerHTML = finalMessage
+      modalBody.textContent = finalMessage
     }
   } else {
     clearInterval(messageSetInterval)
     finalMessage = finalMessage.replace('|', '')
-    modalBody.innerHTML = finalMessage
+    modalBody.textContent = finalMessage
   }
 }
 
@@ -165,7 +170,7 @@ function setupGameDifficulty() {
   }
 }
 
-function lives() {
+function manageLives() {
   const difference = counter - score
   if (difference !== 0) {
     chickens[3 - difference].classList.add('hide')
@@ -182,14 +187,14 @@ function lives() {
 function activateCircle() {
   circles[getActiveCircle()].classList.add('active')
   circles[lastCircleNumber].removeEventListener('click', gameOver)
-  circles[lastCircleNumber].addEventListener('click', scoreManager)
-  lives()
+  circles[lastCircleNumber].addEventListener('click', manageScore)
+  manageLives()
   counter++
 }
 
 function deactivateCircle() {
   circles[lastCircleNumber].classList.remove('active')
-  circles[lastCircleNumber].removeEventListener('click', scoreManager)
+  circles[lastCircleNumber].removeEventListener('click', manageScore)
   circles[lastCircleNumber].addEventListener('click', gameOver)
 }
 
@@ -197,10 +202,10 @@ function toggleModal() {
   modal.classList.toggle('visible')
 }
 
-function scoreManager() {
+function manageScore() {
   score++
   scores.forEach((v, i) => {
-    v.innerHTML = `current score: ${score}`
+    v.textContent = `current score: ${score}`
   })
   chickenSound()
   deactivateCircle()
@@ -211,7 +216,7 @@ function scoreManager() {
 
 const gameOver = () => {
   gameStatus = false
-  modalHeader.innerHTML = `Your total score is ${score}`
+  modalHeader.textContent = `Your total score is ${score}`
   if (
     lastCircleNumber !== lastClickedCircleIndex &&
     lastClickedCircleIndex >= 0
@@ -231,11 +236,10 @@ const gameOver = () => {
     circle.removeEventListener('click', gameOver)
   })
   calculateFinalMessageSpeed()
-  /* The iterval is based on the duration of the animation */
-  setTimeout(intervalTyping, 900)
+  setTimeout(intervalTyping, modalAnimationDuration)
 }
 
-function circlesManager() {
+function manageCircles() {
   lastClickedCircleIndex = -1
   if (lastCircleNumber !== -1) {
     deactivateCircle()
@@ -250,25 +254,25 @@ function circlesManager() {
   }
 }
 
-function gameManager() {
+function manageGame() {
   if (!gameStatus) {
     return
   }
   if (counter - score === 3) {
-    lives()
+    manageLives()
     gameOver()
     return
   }
-  setTimeout(gameManager, gamePace)
+  setTimeout(manageGame, gamePace)
   if (gamePace > gameMaxSpeed) {
     gamePace *= gameStep
-    circlesManager()
+    manageCircles()
   } else {
-    circlesManager()
+    manageCircles()
   }
 }
 
-const play = () => {
+const startGame = () => {
   if (easy.checked) {
     gameDifficulty = 'easy'
   } else if (medium.checked) {
@@ -281,16 +285,16 @@ const play = () => {
   gameStatus = true
   startButton.style.display = 'none'
   stopButton.style.display = 'inline-block'
-  gameManager()
+  manageGame()
   audioBackground.play()
 }
 
-const stop = () => {
+const stopGame = () => {
   gameStatus = false
   gameOver()
 }
 
-const restart = () => {
+const restartGame = () => {
   gameStatus = false
   score = 0
   counter = 0
@@ -302,13 +306,13 @@ const restart = () => {
   startButton.style.display = 'inline-block'
   stopButton.style.display = 'none'
   scores.forEach((v, i) => {
-    v.innerHTML = `current score: ${score}`
+    v.textContent = `current score: ${score}`
   })
   vol = audioBackground.volume = 0.8
   circles.forEach((circle, i) => {
     circle.style.backgroundColor = null
   })
-  modalBody.innerHTML = ''
+  modalBody.textContent = ''
   finalMessage = '|'
   lettersIndex = 0
   chickens.forEach((chicken, i) => {
@@ -340,14 +344,15 @@ circles.forEach((circle, i) => {
   circle.addEventListener('click', gameOver)
 })
 
-startButton.addEventListener('click', play)
-stopButton.addEventListener('click', stop)
-restartButton.addEventListener('click', restart)
+startButton.addEventListener('click', startGame)
+stopButton.addEventListener('click', stopGame)
+restartButton.addEventListener('click', restartGame)
 heroButton.addEventListener('click', isNewChampion)
 heroButton.addEventListener('submit', (event) => {
   event.preventDefault()
 })
 
+/* Fix below in according to the style.css file */
 if (window.innerHeight > window.innerWidth) {
   if (window.innerWidth < 620 && window.innerHeight >= 620) {
     alert('Please rotate the device to play.')
