@@ -4,5 +4,6 @@ from .models import Score
 
 class ScoreSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'score')
+        fields = ('name', 'score', 'difficulty')
+        difficulty = serializers.StringRelatedField(default='easy')
         model = Score

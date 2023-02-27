@@ -13,7 +13,8 @@ let gameDifficulty = 'easy'
 let startingDiameter = 150
 
 /* Elements */
-const champ = JSON.parse(getChampions())[2].score
+let heroName
+let champ
 const chickens = document.querySelectorAll('.chicken')
 const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
@@ -53,12 +54,14 @@ let vol = 0.8
 let finalMessage = '|'
 let lettersIndex = 0
 
+/* Sompentitive features  */
 function isNewChampion() {
   const xmlHttp = new XMLHttpRequest()
   const heroName = document.getElementById('name').value
+  alert(heroName)
   xmlHttp.open('POST', 'http://127.0.0.1:8000/score/', false)
   xmlHttp.setRequestHeader('Content-Type', 'application/json')
-  xmlHttp.send(JSON.stringify({ name: heroName, score }))
+  xmlHttp.send(JSON.stringify({ name: heroName, score, difficulty: gameDifficulty }))
 }
 
 function getChampions() {
@@ -273,6 +276,13 @@ function manageGame() {
 }
 
 const startGame = () => {
+  heroName = document.getElementById('name').value
+  if (heroName) {
+    champ = JSON.parse(getChampions())[2].score
+    alert(heroName)
+  } else {
+    alert('nameless hero')
+  }
   if (easy.checked) {
     gameDifficulty = 'easy'
   } else if (medium.checked) {
