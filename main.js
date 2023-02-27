@@ -13,16 +13,13 @@ let gameDifficulty = 'easy'
 let startingDiameter = 150
 
 /* Elements */
-let heroName
-let champ
+
 const chickens = document.querySelectorAll('.chicken')
 const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
 const stopButton = document.querySelector('.stop')
 const restartButton = document.querySelector('.restart')
-const heroButton = document.querySelector('.heroname')
 const scores = document.querySelectorAll('.score')
-const champions = document.querySelector('.modal-champion') // TODO: fix an auto-refresh issue
 const modal = document.querySelector('.modal')
 const modalHeader = document.querySelector('.modal-header')
 const modalBody = document.querySelector('.modal-body')
@@ -54,11 +51,15 @@ let vol = 0.8
 let finalMessage = '|'
 let lettersIndex = 0
 
-/* Sompentitive features  */
+/* TODO: fix an auto-refresh issue, instead you should leave the name field empty */
+/* Compentitive features  */
+/* let heroName
+let champ
+const champions = document.querySelector('.modal-champion')
+
 function isNewChampion() {
   const xmlHttp = new XMLHttpRequest()
   const heroName = document.getElementById('name').value
-  alert(heroName)
   xmlHttp.open('POST', 'http://127.0.0.1:8000/score/', false)
   xmlHttp.setRequestHeader('Content-Type', 'application/json')
   xmlHttp.send(JSON.stringify({ name: heroName, score, difficulty: gameDifficulty }))
@@ -69,7 +70,8 @@ function getChampions() {
   xmlHttp.open('GET', 'http://127.0.0.1:8000/score/', false)
   xmlHttp.send(null)
   return xmlHttp.response
-}
+} */
+/* end of compentitive feature */
 
 /* Sounds and messages */
 audioBackground.volume = 0.8
@@ -229,12 +231,15 @@ const gameOver = () => {
   deactivateCircle()
   stopButton.style.display = 'none'
   backgroundMusicFadeout()
-  if (score >= champ) {
+  toggleModal() // delete this line in case of activating compentitive
+  /* Compentitive feature */
+  /* if (score >= champ && heroName) {
     isNewChampion()
     toggleModal()
   } else {
     toggleModal()
-  }
+  } */
+  /* end of compentitive feature */
   circles.forEach((circle, i) => {
     circle.removeEventListener('click', gameOver)
   })
@@ -276,10 +281,12 @@ function manageGame() {
 }
 
 const startGame = () => {
-  heroName = document.getElementById('name').value
+  /* Compentitive feature */
+  /* heroName = document.getElementById('name').value
   if (heroName) {
     champ = JSON.parse(getChampions())[2].score
-  }
+  } */
+  /* end of compentitive feature */
   if (easy.checked) {
     gameDifficulty = 'easy'
   } else if (medium.checked) {
@@ -354,10 +361,6 @@ circles.forEach((circle, i) => {
 startButton.addEventListener('click', startGame)
 stopButton.addEventListener('click', stopGame)
 restartButton.addEventListener('click', restartGame)
-heroButton.addEventListener('click', isNewChampion)
-heroButton.addEventListener('submit', (event) => {
-  event.preventDefault()
-})
 
 /* Fix below in according to the style.css file */
 if (window.innerHeight > window.innerWidth) {

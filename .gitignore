@@ -6,3 +6,6 @@ __pycache__/
 tailwind.config.js
 db.sqlite3
 dist/
+.prettierignore
+.prettierrc
+.eslintrc.json
