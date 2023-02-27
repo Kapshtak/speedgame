@@ -279,9 +279,6 @@ const startGame = () => {
   heroName = document.getElementById('name').value
   if (heroName) {
     champ = JSON.parse(getChampions())[2].score
-    alert(heroName)
-  } else {
-    alert('nameless hero')
   }
   if (easy.checked) {
     gameDifficulty = 'easy'
