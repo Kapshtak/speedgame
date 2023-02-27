@@ -116,6 +116,10 @@ header {
   font-size: 48px;
 }
 
+.modal-champion {
+  display: none;
+}
+
 .modal-header {
   min-height: 100px;
 }
@@ -128,7 +132,8 @@ header {
   min-height: 100px;
 }
 
-.modal.visible {
+.modal.visible,
+.modal-champion.visible {
   background-color: rgba(202, 199, 244, 0.76);
   position: absolute;
   display: grid;
@@ -140,7 +145,8 @@ header {
   align-items: center;
 }
 
-.modal {
+.modal,
+.modal-champion {
   animation-name: animatetop;
   animation-duration: 0.9s;
   border-radius: 5px;

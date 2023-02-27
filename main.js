@@ -14,12 +14,15 @@ let gameDifficulty = 'easy'
 let startingDiameter = 150
 
 /* Elements */
+const champ = JSON.parse(getChampions())[2].score
 const chickens = document.querySelectorAll('.chicken')
 const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
 const stopButton = document.querySelector('.stop')
 const restartButton = document.querySelector('.restart')
+const heroButton = document.querySelector('.heroname')
 const scores = document.querySelectorAll('.score')
+const champions = document.querySelector('.modal-champion')
 const modal = document.querySelector('.modal')
 const modalHeader = document.querySelector('.modal-header')
 const modalBody = document.querySelector('.modal-body')
@@ -46,6 +49,21 @@ let finalMessageSpeed
 let vol = (audioBackground.volume = 0.8)
 let finalMessage = '|'
 let lettersIndex = 0
+
+function isNewChampion() {
+  const xmlHttp = new XMLHttpRequest()
+  const heroName = document.getElementById('name').value
+  xmlHttp.open('POST', 'http://127.0.0.1:8000/score/', false)
+  xmlHttp.setRequestHeader('Content-Type', 'application/json')
+  xmlHttp.send(JSON.stringify({ name: heroName, score }))
+}
+
+function getChampions() {
+  const xmlHttp = new XMLHttpRequest()
+  xmlHttp.open('GET', 'http://127.0.0.1:8000/score/', false)
+  xmlHttp.send(null)
+  return xmlHttp.response
+}
 
 /* Sounds and messages */
 function chickenSound() {
@@ -203,7 +221,12 @@ const gameOver = () => {
   deactivateCircle()
   stopButton.style.display = 'none'
   backgroundMusicFadeout()
-  toggleModal()
+  if (score >= champ) {
+    isNewChampion()
+    toggleModal()
+  } else {
+    toggleModal()
+  }
   circles.forEach((circle, i) => {
     circle.removeEventListener('click', gameOver)
   })
@@ -320,6 +343,10 @@ circles.forEach((circle, i) => {
 startButton.addEventListener('click', play)
 stopButton.addEventListener('click', stop)
 restartButton.addEventListener('click', restart)
+heroButton.addEventListener('click', isNewChampion)
+heroButton.addEventListener('submit', (event) => {
+  event.preventDefault()
+})
 
 if (window.innerHeight > window.innerWidth) {
   if (window.innerWidth < 620 && window.innerHeight >= 620) {

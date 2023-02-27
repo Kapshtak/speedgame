@@ -1,1 +1,4 @@
-node_modulesnp
+node_modules
+python-server/venv/
+.venv
+venv
