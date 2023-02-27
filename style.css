@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
+:root {
+  --modalAnimationDuration: 0.9s;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -32,6 +36,9 @@ p {
   text-align: center;
 }
 
+.compentitive {
+  padding-top: 1rem;
+}
 label {
   margin-right: 2rem;
 }
@@ -116,6 +123,10 @@ header {
   font-size: 48px;
 }
 
+.modal-champion {
+  display: none;
+}
+
 .modal-header {
   min-height: 100px;
 }
@@ -128,7 +139,8 @@ header {
   min-height: 100px;
 }
 
-.modal.visible {
+.modal.visible,
+.modal-champion.visible {
   background-color: rgba(202, 199, 244, 0.76);
   position: absolute;
   display: grid;
@@ -140,9 +152,10 @@ header {
   align-items: center;
 }
 
-.modal {
+.modal,
+.modal-champion {
   animation-name: animatetop;
-  animation-duration: 0.9s;
+  animation-duration: var(--modalAnimationDuration);
   border-radius: 5px;
   right: 0;
   left: 0;

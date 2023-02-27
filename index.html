@@ -26,6 +26,7 @@
     <title>Chicken slasher</title>
   </head>
   <body>
+    <!-- the header includes the elements for small screens -->
     <header>
       <div>
         <h3 class="game-name">speedgame</h3>
@@ -39,8 +40,13 @@
         <img class="chicken" src="media/images/chicken_icon.png" />
       </div>
     </header>
+    <!-- end of elements for small screens -->
     <div class="container">
       <h1>speedgame</h1>
+      <div class="modal-champion">
+        <h1>We have new champion!</h1>
+        <button type="submit" class="btn heroname">Making history!</button>
+      </div>
       <div class="modal">
         <div class="modal-header"></div>
         <div class="modal-body"></div>
@@ -71,8 +77,11 @@
           <input type="radio" id="hard" name="difficulty" />  
         <label for="hard">Hard</label>
       </div>
+      <div class="compentitive">
+        <label for="name">Add your name for a competitive game:</label>
+        <input type="text" id="name" name="name" /><br />
+      </div>
     </div>
-    <!-- <script script type="module" src="./score.js"></script> -->
     <script type="module" src="./main.js"></script>
   </body>
 </html>
