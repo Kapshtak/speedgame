@@ -40,13 +40,7 @@ p {
   text-align: center;
 }
 
-.compentitive {
-  padding-top: 1rem;
-}
-label {
-  margin-right: 2rem;
-}
-
+/* Lifes */
 img {
   padding-top: 30px;
   width: 75px;
@@ -66,15 +60,13 @@ img {
   animation-duration: 0.35s;
 }
 
-.stop {
-  display: none;
-}
-
+/* Score */
 .score {
   margin-top: 50px;
   margin-bottom: 75px;
 }
 
+/* Circles */
 .balls {
   display: grid;
   max-width: 620px;
@@ -82,10 +74,6 @@ img {
   justify-items: center;
   margin: auto;
   grid-template-columns: repeat(4, 25%);
-}
-
-.label {
-  padding-left: 1rem;
 }
 
 .circle {
@@ -100,6 +88,7 @@ img {
   background-size: 100%;
 }
 
+/* Buttons */
 .btn {
   background-color: rgb(92, 162, 231);
   max-width: 250px;
@@ -115,6 +104,15 @@ img {
 
 .btn:active {
   background-color: rgb(45, 137, 228);
+}
+
+.stop {
+  display: none;
+}
+
+/* Difficulty */
+label {
+  margin-right: 2rem;
 }
 
 /* Overlay modal */
