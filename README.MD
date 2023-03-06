@@ -15,7 +15,7 @@ Live page [here](https://public.bc.fi/s2300101/speedgame/)
 
 ## Screenshot
 
-![alt text](https://github.com/kapshtak/speedgame/media/images/screenshot.png?raw=true)
+![alt text](https://github.com/Kapshtak/speedgame/blob/main/media/images/screenshot.png)
 
 ## Authors and credits
 
