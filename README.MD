@@ -1,25 +1,31 @@
 # Speed game
-- ~~Score~~
+This project is a game with simple rules: you have to click on appearing circles as fast as you can. If you skip three circles, or click on the wrong one, the game is over. The game has three difficulty levels, so you can test your ability to click quickly in a more stressful atmosphere. 
 
-- ~~4 circles to click on~~
+## Technologies used
 
-- ~~Button to start the game~~
+This project was built with: 
 
-- ~~Active circle must be a picture (toilet paper, cheese, etc)~~
+- HTML
+- JS
+- CSS
 
-- ~~Start button changes to stop button~~
+## Setup and usage
 
-- ~~After game-over or clicking stop button we need modal with score and different messages related to the score~~
+Live page [here](https://public.bc.fi/s2300101/speedgame/)
 
-- ~~3 missing are allowed, no miss clicks are allowed~~
+## Screenshot
 
-- ~~Numbers cannot be repeated!~~
+![alt text](https://github.com/kapshtak/speedgame/media/images/screenshot.png?raw=true)
 
-- ~~Circles should be disabled before the game starts~~
+## Authors and credits
 
-- ~~Add sound to start, end and clicks~~
+Arseniiy Kapshtyk
+- GitHub @kapshtak
+- [LinkedIn](https://www.linkedin.com/in/arseniiy-kapshtyk-408a1a253/)
 
-- ~~Deploy the game~~
+## Sources of sounds and images
 
-# NB
-The commented code relates to the top-score features that have not yet been implemented.
+I used the emblem of the fictional cafe "Los Pollos Hermanos" and the song of Negro Y Azul "The Ballad of Heisenberg" from the series "Breaking bad", the chicken scream from the game Counter Strike and two sounds from the world famous MOBA game DOTA2.
+
+### NB
+- The version for mobile phones has not yet been fully completed.

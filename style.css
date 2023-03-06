@@ -17,6 +17,10 @@ body {
   margin: auto;
 }
 
+header {
+  display: none;
+}
+
 h1 {
   font-size: 56px;
 }
@@ -91,10 +95,6 @@ img {
   background: rgb(10, 237, 218);
 }
 
-header {
-  display: none;
-}
-
 .active {
   background-image: url('media/images/pollos.png');
   background-size: 100%;
@@ -152,8 +152,7 @@ header {
   align-items: center;
 }
 
-.modal,
-.modal-champion {
+.modal {
   animation-name: animatetop;
   animation-duration: var(--modalAnimationDuration);
   border-radius: 5px;

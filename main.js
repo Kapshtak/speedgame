@@ -13,7 +13,6 @@ let gameDifficulty = 'easy'
 let startingDiameter = 150
 
 /* Elements */
-
 const chickens = document.querySelectorAll('.chicken')
 const circles = document.querySelectorAll('.circle')
 const startButton = document.querySelector('.start')
@@ -50,28 +49,6 @@ let finalMessageSpeed
 let vol = 0.8
 let finalMessage = '|'
 let lettersIndex = 0
-
-/* TODO: fix an auto-refresh issue, instead you should leave the name field empty */
-/* Compentitive features  */
-/* let heroName
-let champ
-const champions = document.querySelector('.modal-champion')
-
-function isNewChampion() {
-  const xmlHttp = new XMLHttpRequest()
-  const heroName = document.getElementById('name').value
-  xmlHttp.open('POST', 'http://127.0.0.1:8000/score/', false)
-  xmlHttp.setRequestHeader('Content-Type', 'application/json')
-  xmlHttp.send(JSON.stringify({ name: heroName, score, difficulty: gameDifficulty }))
-}
-
-function getChampions() {
-  const xmlHttp = new XMLHttpRequest()
-  xmlHttp.open('GET', 'http://127.0.0.1:8000/score/', false)
-  xmlHttp.send(null)
-  return xmlHttp.response
-} */
-/* end of compentitive feature */
 
 /* Sounds and messages */
 audioBackground.volume = 0.8
@@ -231,15 +208,7 @@ const gameOver = () => {
   deactivateCircle()
   stopButton.style.display = 'none'
   backgroundMusicFadeout()
-  toggleModal() // delete this line in case of activating compentitive
-  /* Compentitive feature */
-  /* if (score >= champ && heroName) {
-    isNewChampion()
-    toggleModal()
-  } else {
-    toggleModal()
-  } */
-  /* end of compentitive feature */
+  toggleModal()
   circles.forEach((circle, i) => {
     circle.removeEventListener('click', gameOver)
   })
@@ -281,12 +250,6 @@ function manageGame() {
 }
 
 const startGame = () => {
-  /* Compentitive feature */
-  /* heroName = document.getElementById('name').value
-  if (heroName) {
-    champ = JSON.parse(getChampions())[2].score
-  } */
-  /* end of compentitive feature */
   if (easy.checked) {
     gameDifficulty = 'easy'
   } else if (medium.checked) {
