@@ -155,6 +155,7 @@ function setupGameDifficulty() {
 function manageLives() {
   const difference = counter - score
   if (difference !== 0) {
+    /* chicken length is 6 due to the version for small screens */
     chickens[3 - difference].classList.add('hide')
     chickens[6 - difference].classList.add('hide')
     setTimeout(() => {
