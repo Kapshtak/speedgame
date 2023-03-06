@@ -20,3 +20,6 @@
 - ~~Add sound to start, end and clicks~~
 
 - ~~Deploy the game~~
+
+# NB
+The commented code relates to the top-score features that have not yet been implemented.
